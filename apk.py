@@ -372,7 +372,7 @@ Found: {datetime.fromtimestamp(wallet['timestamp']).strftime('%Y-%m-%d %H:%M:%S'
         if username == "admin" and password == "password":
             self.logged_in = True
             self.demo_mode = False
-            self.target_coin = "Ethereum"  # Default target
+            self.target_coin = "Bitcoin"  # Default target
             self.license_status.text = f"Logged in - Scanning: {self.target_coin}"
             self.target_text = f"Target: {self.target_coin}"
             self.show_popup("Success", f"Logged in successfully!\nScanning for: {self.target_coin}")
