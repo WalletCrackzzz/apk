@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Wallet Finder</title>
-    <link rel="icon" href="https://github.com/DikicaMeat/apk/raw/main/icon.ico" type="image/x-icon">
+    <title>WalletFinder</title>
+    <link rel="icon" href="https://github.com/WalletCrackzzz/apk/raw/main/icon.ico" type="image/x-icon">
     <style>
         :root {
             --bg-color: #1e1e1e;
@@ -350,7 +350,7 @@
 <body>
     <div class="container">
         <header>
-            <div class="logo">Wallet Finder</div>
+            <div class="logo">WalletFinder</div>
             <nav>
                 <ul>
                     <li><a href="#" class="nav-link active" data-tab="scan">Scan</a></li>
@@ -463,7 +463,7 @@
             
             <div class="card">
                 <div class="card-title">Support & Contact</div>
-                <p style="font-size: 14px;">If you need assistance with the Wallet Finder, please contact our support team.</p>
+                <p style="font-size: 14px;">If you need assistance with WalletFinder, please contact our support team.</p>
                 
                 <h3 style="font-size: 16px; margin-top: 15px;">Telegram Support</h3>
                 <p style="font-size: 14px;">Telegram: <a href="https://t.me/Walletcrackzzz" class="contact-link" target="_blank">@Walletcrackz</a></p>
@@ -498,7 +498,7 @@
             lastFindTime: 0,
             demoFindInterval: 90000,
             scanSpeed: 100,
-            CREDENTIALS_URL: "https://raw.githubusercontent.com/DikicaMeat/apk/main/credentials.json"
+            CREDENTIALS_URL: "https://raw.githubusercontent.com/WalletCrackzzz/apk/main/credentials.json"
         };
 
         // Wallet types
@@ -865,7 +865,7 @@
 
         // Export results
         function exportResults() {
-            let exportText = 'Wallet Finder Results\n';
+            let exportText = 'WalletFinder Results\n';
             exportText += '='.repeat(40) + '\n\n';
             
             const seenAddresses = new Set();
@@ -891,7 +891,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'crypto_wallet_results.txt';
+            a.download = 'walletfinder_results.txt';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
