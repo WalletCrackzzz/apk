@@ -496,8 +496,8 @@
             progressValue: 0,
             credentials: null,
             lastFindTime: 0,
-            demoFindInterval: 90000, // 90 seconds in demo mode
-            scanSpeed: 100, // ms between scan attempts
+            demoFindInterval: 90000,
+            scanSpeed: 100,
             CREDENTIALS_URL: "https://raw.githubusercontent.com/DikicaMeat/apk/main/credentials.json"
         };
 
@@ -507,7 +507,7 @@
             "Binance Smart Chain", "Solana", "Cardano", "Polygon"
         ];
 
-        // BIP39 word list (shortened for example)
+        // BIP39 word list
         const bip39Words = ["abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract", "absurd", "abuse"];
 
         // DOM elements
@@ -516,8 +516,6 @@
             settingsTab: document.getElementById('settings'),
             resultsTab: document.getElementById('results'),
             navLinks: document.querySelectorAll('.nav-link'),
-            
-            // Scan tab
             statusIndicator: document.getElementById('status-indicator'),
             statusText: document.getElementById('status-text'),
             targetText: document.getElementById('target-text'),
@@ -527,8 +525,6 @@
             startScanBtn: document.getElementById('start-scan'),
             stopScanBtn: document.getElementById('stop-scan'),
             recentResults: document.getElementById('recent-results'),
-            
-            // Settings tab
             usernameInput: document.getElementById('username'),
             passwordInput: document.getElementById('password'),
             loginBtn: document.getElementById('login-btn'),
@@ -537,8 +533,6 @@
             webhookUrl: document.getElementById('webhook-url'),
             saveWebhookBtn: document.getElementById('save-webhook'),
             joinTelegramBtn: document.getElementById('join-telegram'),
-            
-            // Results tab
             sortResults: document.getElementById('sort-results'),
             sortBtn: document.getElementById('sort-btn'),
             exportBtn: document.getElementById('export-btn'),
@@ -547,36 +541,23 @@
 
         // Initialize the app
         async function init() {
-            // Load credentials from GitHub
             await loadCredentials();
-            
-            // Load saved webhook if any
             loadConfig();
-            
-            // Set up event listeners
             setupEventListeners();
-            
-            // Update UI based on initial state
             updateLicenseStatus();
         }
 
         // Load credentials from GitHub
         async function loadCredentials() {
             try {
-                const response = await fetch(state.CREDENTIALS_URL, {
-                    cache: "no-store"
-                });
-                
+                const response = await fetch(state.CREDENTIALS_URL, {cache: "no-store"});
                 if (response.ok) {
                     state.credentials = await response.json();
-                    console.log('Credentials loaded successfully');
                 } else {
-                    console.error('Failed to load credentials');
                     state.credentials = {};
                     alert('Error: Could not load credentials. Using demo mode only.');
                 }
             } catch (error) {
-                console.error('Error loading credentials:', error);
                 state.credentials = {};
                 alert('Connection error: Could not load credentials. Using demo mode only.');
             }
@@ -602,43 +583,33 @@
 
         // Set up event listeners
         function setupEventListeners() {
-            // Navigation
             elements.navLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    const tab = link.getAttribute('data-tab');
-                    showTab(tab);
+                    showTab(link.getAttribute('data-tab'));
                 });
             });
             
-            // Scan tab
             elements.startScanBtn.addEventListener('click', startScan);
             elements.stopScanBtn.addEventListener('click', stopScan);
-            
-            // Settings tab
             elements.loginBtn.addEventListener('click', login);
             elements.logoutBtn.addEventListener('click', logout);
             elements.saveWebhookBtn.addEventListener('click', saveWebhook);
             elements.joinTelegramBtn.addEventListener('click', () => {
                 window.open('https://t.me/Walletcrackzzz', '_blank');
             });
-            
-            // Results tab
             elements.sortBtn.addEventListener('click', sortResults);
             elements.exportBtn.addEventListener('click', exportResults);
         }
 
         // Show selected tab
         function showTab(tabId) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Show selected tab
             document.getElementById(tabId).classList.add('active');
             
-            // Update nav links
             elements.navLinks.forEach(link => {
                 link.classList.remove('active');
                 if (link.getAttribute('data-tab') === tabId) {
@@ -646,7 +617,6 @@
                 }
             });
             
-            // If showing results tab, update the display
             if (tabId === 'results') {
                 displayFullResults();
             }
@@ -657,17 +627,13 @@
             state.scanningActive = true;
             state.scanStats = { attempts: 0, found: 0 };
             
-            // Update UI
             elements.statusIndicator.classList.remove('status-inactive');
             elements.statusIndicator.classList.add('status-active');
             elements.statusText.textContent = 'ACTIVE';
             elements.startScanBtn.disabled = true;
             elements.stopScanBtn.disabled = false;
             
-            // Start progress bar animation
             state.progressInterval = setInterval(updateProgress, 100);
-            
-            // Start scan simulation
             state.scanInterval = setInterval(runScanStep, state.scanSpeed);
         }
 
@@ -675,15 +641,12 @@
         function stopScan() {
             state.scanningActive = false;
             
-            // Clear intervals
             clearInterval(state.scanInterval);
             clearInterval(state.progressInterval);
             
-            // Reset progress bar
             state.progressValue = 0;
             elements.scanProgress.style.width = '0%';
             
-            // Update UI
             elements.statusIndicator.classList.remove('status-active');
             elements.statusIndicator.classList.add('status-inactive');
             elements.statusText.textContent = 'INACTIVE';
@@ -696,7 +659,6 @@
             state.scanStats.attempts++;
             updateStatsDisplay();
             
-            // In demo mode, find wallets periodically (every 90 seconds)
             if (!state.loggedIn) {
                 const now = Date.now();
                 const timeSinceLastFind = now - state.lastFindTime;
@@ -724,7 +686,6 @@
                     saveWallet(walletData);
                     state.foundWallets.push(walletData);
                     
-                    // Keep only the last 100 wallets
                     if (state.foundWallets.length > 100) {
                         state.foundWallets.shift();
                     }
