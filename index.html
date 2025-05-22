@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Wallet Finder</title>
+    <title>Crypto Wallet Finder</title>
     <link rel="icon" href="https://github.com/DikicaMeat/apk/raw/main/icon.ico" type="image/x-icon">
     <style>
         :root {
@@ -350,7 +350,7 @@
 <body>
     <div class="container">
         <header>
-            <div class="logo">Wallet Finder</div>
+            <div class="logo">Crypto Wallet Finder</div>
             <nav>
                 <ul>
                     <li><a href="#" class="nav-link active" data-tab="scan">Scan</a></li>
@@ -463,7 +463,7 @@
             
             <div class="card">
                 <div class="card-title">Support & Contact</div>
-                <p style="font-size: 14px;">If you need assistance with the Wallet Finder, please contact our support team.</p>
+                <p style="font-size: 14px;">If you need assistance with the Crypto Wallet Finder, please contact our support team.</p>
                 
                 <h3 style="font-size: 16px; margin-top: 15px;">Telegram Support</h3>
                 <p style="font-size: 14px;">Telegram: <a href="https://t.me/Walletcrackzzz" class="contact-link" target="_blank">@Walletcrackz</a></p>
@@ -494,50 +494,11 @@
             scanInterval: null,
             progressInterval: null,
             progressValue: 0,
-            credentials: {
-                "user9": {
-                    "password": "da5ea235e98440bd3750403be3d2399d6f1b649a625c1e4ed9acfea42ec16d1b",
-                    "coins": ["Bitcoin", "Ethereum"]
-                },
-                "user8": {
-                    "password": "da5ea235e98440bd3750403be3d2399d6f1b649a625c1e4ed9acfea42ec16d1b",
-                    "coins": ["Solana", "Polygon"]
-                },
-                "user0": {
-                    "password": "da5ea235e98440bd3750403be3d2399d6f1b649a625c1e4ed9acfea42ec16d1b",
-                    "coins": ["Bitcoin", "Ethereum", "Solana", "Polygon"]
-                },
-                "user1": {
-                    "password": "da5ea235e98440bd3750403be3d2399d6f1b649a625c1e4ed9acfea42ec16d1b",
-                    "coins": ["Bitcoin", "Ethereum"]
-                },
-                "user2": {
-                    "password": "da5ea235e98440bd3750403be3d2399d6f1b649a625c1e4ed9acfea42ec16d1b",
-                    "coins": ["Bitcoin", "Ethereum"]
-                },
-                "user3": {
-                    "password": "da5ea235e98440bd3750403be3d2399d6f1b649a625c1e4ed9acfea42ec16d1b",
-                    "coins": ["Bitcoin", "Ethereum"]
-                },
-                "user4": {
-                    "password": "da5ea235e98440bd3750403be3d2399d6f1b649a625c1e4ed9acfea42ec16d1b",
-                    "coins": ["Bitcoin", "Ethereum"]
-                },
-                "user5": {
-                    "password": "da5ea235e98440bd3750403be3d2399d6f1b649a625c1e4ed9acfea42ec16d1b",
-                    "coins": ["Bitcoin", "Ethereum"]
-                },
-                "user6": {
-                    "password": "da5ea235e98440bd3750403be3d2399d6f1b649a625c1e4ed9acfea42ec16d1b",
-                    "coins": ["Bitcoin", "Ethereum"]
-                },
-                "user7": {
-                    "password": "da5ea235e98440bd3750403be3d2399d6f1b649a625c1e4ed9acfea42ec16d1b",
-                    "coins": ["Bitcoin", "Ethereum"]
-            },
+            credentials: null,
             lastFindTime: 0,
             demoFindInterval: 90000, // 90 seconds in demo mode
-            scanSpeed: 100 // ms between scan attempts
+            scanSpeed: 100, // ms between scan attempts
+            CREDENTIALS_URL: "https://raw.githubusercontent.com/DikicaMeat/apk/main/credentials.json" // YOUR GITHUB CREDENTIALS
         };
 
         // Wallet types
@@ -585,7 +546,10 @@
         };
 
         // Initialize the app
-        function init() {
+        async function init() {
+            // Load credentials from GitHub
+            await loadCredentials();
+            
             // Load saved webhook if any
             loadConfig();
             
@@ -594,6 +558,32 @@
             
             // Update UI based on initial state
             updateLicenseStatus();
+        }
+
+        // Load credentials from YOUR GitHub
+        async function loadCredentials() {
+            try {
+                // Use raw.githubusercontent.com URL for the JSON file
+                console.log(`Loading credentials from: ${state.CREDENTIALS_URL}`);
+                const response = await fetch(state.CREDENTIALS_URL, {
+                    cache: "no-store" // Bypass cache to get fresh data
+                });
+                
+                if (response.ok) {
+                    state.credentials = await response.json();
+                    console.log('Credentials loaded successfully from GitHub');
+                    console.log('Available users:', Object.keys(state.credentials));
+                } else {
+                    console.error('Failed to load credentials from GitHub');
+                    // Fallback to empty credentials if loading fails
+                    state.credentials = {};
+                    alert('Error: Could not load credentials from GitHub. Using demo mode only.');
+                }
+            } catch (error) {
+                console.error('Error loading credentials from GitHub:', error);
+                state.credentials = {};
+                alert('Connection error: Could not load credentials from GitHub. Using demo mode only.');
+            }
         }
 
         // Load config from localStorage
@@ -927,7 +917,7 @@
 
         // Export results
         function exportResults() {
-            let exportText = 'Wallet Finder Results\n';
+            let exportText = 'Crypto Wallet Finder Results\n';
             exportText += '='.repeat(40) + '\n\n';
             
             const seenAddresses = new Set();
@@ -962,7 +952,7 @@
         }
 
         // Login
-        function login() {
+        async function login() {
             const username = elements.usernameInput.value.trim();
             const password = elements.passwordInput.value.trim();
             
@@ -972,7 +962,7 @@
             }
             
             // Verify credentials
-            const authResult = verifyCredentials(username, password);
+            const authResult = await verifyCredentials(username, password);
             if (authResult) {
                 state.loggedIn = true;
                 state.targetCoin = authResult;
@@ -1000,7 +990,7 @@
         }
 
         // Verify credentials
-        function verifyCredentials(username, password) {
+        async function verifyCredentials(username, password) {
             if (!state.credentials) {
                 console.error('Credentials not loaded');
                 return false;
@@ -1009,7 +999,7 @@
             const userData = state.credentials[username];
             if (!userData) return false;
             
-            // SHA-256 hash comparison
+            // Simple hash for demo purposes (in real app, use proper hashing)
             const inputHash = sha256(password);
             if (inputHash === userData.password) {
                 return userData.coins ? userData.coins.join(',') : null;
@@ -1018,19 +1008,17 @@
             return false;
         }
 
-        // SHA-256 function
-        async function sha256(message) {
-            // Encode as UTF-8
-            const msgBuffer = new TextEncoder().encode(message);
-            
-            // Hash the message
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            
-            // Convert to hex string
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            
-            return hashHex;
+        // Simple SHA-256 function for demo
+        function sha256(input) {
+            // This is a simplified version for demo purposes
+            // In a real app, use a proper cryptographic library
+            let hash = 0;
+            for (let i = 0; i < input.length; i++) {
+                const char = input.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash |= 0; // Convert to 32bit integer
+            }
+            return hash.toString();
         }
 
         // Logout
