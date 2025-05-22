@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Wallet Finder</title>
     <link rel="icon" href="https://github.com/DikicaMeat/apk/raw/main/icon.ico" type="image/x-icon">
     <style>
@@ -17,6 +17,11 @@
             --border-color: #444;
         }
         
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
         body {
             font-family: 'Arial', sans-serif;
             background-color: var(--bg-color);
@@ -24,27 +29,37 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
+            overflow-x: hidden;
+            touch-action: manipulation;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 20px;
+            padding: 15px;
         }
         
         header {
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-color);
+            z-index: 100;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 0;
+            padding: 10px 0;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .logo {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             color: var(--primary-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 50%;
         }
         
         nav ul {
@@ -55,15 +70,17 @@
         }
         
         nav ul li {
-            margin-left: 20px;
+            margin-left: 8px;
         }
         
         nav ul li a {
             color: var(--text-color);
             text-decoration: none;
-            padding: 5px 10px;
+            padding: 5px 8px;
             border-radius: 4px;
             transition: background-color 0.3s;
+            font-size: 14px;
+            white-space: nowrap;
         }
         
         nav ul li a:hover, nav ul li a.active {
@@ -74,29 +91,32 @@
         .card {
             background-color: var(--card-bg);
             border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         
         .card-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: var(--primary-color);
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
+            padding-bottom: 8px;
         }
         
         .btn {
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 15px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
             transition: background-color 0.3s;
+            width: 100%;
+            margin-bottom: 8px;
+            -webkit-appearance: none;
         }
         
         .btn:hover {
@@ -120,13 +140,14 @@
         }
         
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
+            font-size: 14px;
         }
         
         .form-control {
@@ -136,10 +157,11 @@
             border: 1px solid var(--border-color);
             background-color: #353535;
             color: var(--text-color);
+            font-size: 14px;
         }
         
         .progress {
-            height: 20px;
+            height: 15px;
             background-color: #353535;
             border-radius: 4px;
             margin-bottom: 15px;
@@ -170,18 +192,21 @@
         }
         
         .results-list {
-            max-height: 300px;
+            max-height: 200px;
             overflow-y: auto;
             border: 1px solid var(--border-color);
             border-radius: 4px;
-            padding: 10px;
+            padding: 8px;
             background-color: #353535;
+            font-size: 13px;
         }
         
         .result-item {
-            padding: 8px;
+            padding: 6px;
             border-bottom: 1px solid var(--border-color);
             font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
         }
         
         .result-item:last-child {
@@ -206,10 +231,10 @@
         
         footer {
             text-align: center;
-            padding: 20px 0;
+            padding: 15px 0;
             border-top: 1px solid var(--border-color);
-            margin-top: 20px;
-            font-size: 14px;
+            margin-top: 15px;
+            font-size: 12px;
             color: #888;
         }
         
@@ -224,40 +249,40 @@
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
         
         .stat-card {
             background-color: #353535;
-            padding: 15px;
+            padding: 10px;
             border-radius: 4px;
             text-align: center;
         }
         
         .stat-value {
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
-            margin: 5px 0;
+            margin: 3px 0;
         }
         
         .stat-label {
-            font-size: 14px;
+            font-size: 12px;
             color: #aaa;
         }
         
         .wallet-types {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
         }
         
         .wallet-type {
             background-color: #353535;
-            padding: 8px 15px;
+            padding: 6px 10px;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 12px;
         }
         
         .contact-link {
@@ -268,6 +293,58 @@
         .contact-link:hover {
             text-decoration: underline;
         }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-group .btn {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        /* Mobile-specific adjustments */
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 8px 0;
+            }
+            
+            .logo {
+                font-size: 16px;
+            }
+            
+            nav ul li a {
+                padding: 4px 6px;
+                font-size: 12px;
+            }
+            
+            .card {
+                padding: 10px;
+            }
+            
+            .card-title {
+                font-size: 15px;
+            }
+            
+            .btn {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+            
+            .results-list {
+                max-height: 150px;
+                font-size: 12px;
+            }
+            
+            .result-item {
+                font-size: 11px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -277,9 +354,8 @@
             <nav>
                 <ul>
                     <li><a href="#" class="nav-link active" data-tab="scan">Scan</a></li>
-                    <li><a href="#" class="nav-link" data-tab="settings">Settings</a></li>
                     <li><a href="#" class="nav-link" data-tab="results">Results</a></li>
-                    <li><a href="#" class="nav-link" data-tab="support">Support</a></li>
+                    <li><a href="#" class="nav-link" data-tab="settings">Settings</a></li>
                 </ul>
             </nav>
         </header>
@@ -311,7 +387,7 @@
                     <div class="wallet-type">Bitcoin</div>
                     <div class="wallet-type">Ethereum</div>
                     <div class="wallet-type">Litecoin</div>
-                    <div class="wallet-type">Binance Smart Chain</div>
+                    <div class="wallet-type">BSC</div>
                     <div class="wallet-type">Solana</div>
                     <div class="wallet-type">Cardano</div>
                     <div class="wallet-type">Polygon</div>
@@ -321,7 +397,7 @@
                     <div class="progress-bar" id="scan-progress"></div>
                 </div>
                 
-                <div class="form-group">
+                <div class="btn-group">
                     <button id="start-scan" class="btn btn-success">Start Scan</button>
                     <button id="stop-scan" class="btn btn-danger" disabled>Stop Scan</button>
                 </div>
@@ -330,39 +406,6 @@
             <div class="card">
                 <div class="card-title">Recent Results</div>
                 <div class="results-list" id="recent-results"></div>
-            </div>
-        </div>
-        
-        <!-- Settings Tab -->
-        <div id="settings" class="tab-content">
-            <div class="card">
-                <div class="card-title">Account Login</div>
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" class="form-control" placeholder="Enter username">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" class="form-control" placeholder="Enter password">
-                </div>
-                <div class="form-group">
-                    <button id="login-btn" class="btn">Login</button>
-                    <button id="logout-btn" class="btn btn-danger">Logout</button>
-                </div>
-                <div id="license-status" class="form-group">
-                    Status: Not logged in (DEMO MODE)
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-title">Discord Webhook Setup</div>
-                <div class="form-group">
-                    <label for="webhook-url">Webhook URL</label>
-                    <input type="text" id="webhook-url" class="form-control" placeholder="Enter webhook URL">
-                </div>
-                <div class="form-group">
-                    <button id="save-webhook" class="btn">Save Webhook</button>
-                </div>
             </div>
         </div>
         
@@ -378,37 +421,67 @@
                         <option value="balance">By Balance</option>
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="btn-group">
                     <button id="sort-btn" class="btn">Sort Results</button>
                     <button id="export-btn" class="btn">Export Results</button>
                 </div>
-                <div class="results-list" id="full-results" style="height: 500px;"></div>
+                <div class="results-list" id="full-results" style="height: 300px;"></div>
             </div>
         </div>
         
-        <!-- Support Tab -->
-        <div id="support" class="tab-content">
+        <!-- Settings Tab -->
+        <div id="settings" class="tab-content">
+            <div class="card">
+                <div class="card-title">Account Login</div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter password">
+                </div>
+                <div class="btn-group">
+                    <button id="login-btn" class="btn">Login</button>
+                    <button id="logout-btn" class="btn btn-danger">Logout</button>
+                </div>
+                <div id="license-status" class="form-group" style="font-size: 14px; margin-top: 10px;">
+                    Status: Not logged in (DEMO MODE)
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Discord Webhook Setup</div>
+                <div class="form-group">
+                    <label for="webhook-url">Webhook URL</label>
+                    <input type="text" id="webhook-url" class="form-control" placeholder="Enter webhook URL">
+                </div>
+                <div class="form-group">
+                    <button id="save-webhook" class="btn">Save Webhook</button>
+                </div>
+            </div>
+            
             <div class="card">
                 <div class="card-title">Support & Contact</div>
-                <p>If you need assistance with the Wallet Finder, please contact our support team.</p>
+                <p style="font-size: 14px;">If you need assistance with the Wallet Finder, please contact our support team.</p>
                 
-                <h3>Telegram Support</h3>
-                <p>Telegram: <a href="https://t.me/Walletcrackzzz" class="contact-link" target="_blank">@Walletcrackz</a></p>
+                <h3 style="font-size: 16px; margin-top: 15px;">Telegram Support</h3>
+                <p style="font-size: 14px;">Telegram: <a href="https://t.me/Walletcrackzzz" class="contact-link" target="_blank">@Walletcrackz</a></p>
                 
                 <div class="form-group">
                     <button id="join-telegram" class="btn">Join Telegram Group</button>
                 </div>
                 
-                <h3>Frequently Asked Questions</h3>
-                <div class="form-group">
+                <h3 style="font-size: 16px; margin-top: 15px;">Frequently Asked Questions</h3>
+                <div class="form-group" style="font-size: 14px;">
                     <strong>Q: How do I get a license?</strong><br>
                     A: Contact us on Telegram to purchase a license.
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="font-size: 14px;">
                     <strong>Q: Why am I only getting demo results?</strong><br>
                     A: You need to log in with a valid license to get real results.
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="font-size: 14px;">
                     <strong>Q: How often are new wallets found?</strong><br>
                     A: In licensed mode, results depend on your subscription level.
                 </div>
@@ -435,7 +508,10 @@
             scanInterval: null,
             progressInterval: null,
             progressValue: 0,
-            credentials: null
+            credentials: null,
+            lastFindTime: 0,
+            demoFindInterval: 90000, // 90 seconds in demo mode
+            scanSpeed: 100 // ms between scan attempts
         };
 
         // Wallet types
@@ -452,7 +528,6 @@
             scanTab: document.getElementById('scan'),
             settingsTab: document.getElementById('settings'),
             resultsTab: document.getElementById('results'),
-            supportTab: document.getElementById('support'),
             navLinks: document.querySelectorAll('.nav-link'),
             
             // Scan tab
@@ -474,15 +549,13 @@
             licenseStatus: document.getElementById('license-status'),
             webhookUrl: document.getElementById('webhook-url'),
             saveWebhookBtn: document.getElementById('save-webhook'),
+            joinTelegramBtn: document.getElementById('join-telegram'),
             
             // Results tab
             sortResults: document.getElementById('sort-results'),
             sortBtn: document.getElementById('sort-btn'),
             exportBtn: document.getElementById('export-btn'),
-            fullResults: document.getElementById('full-results'),
-            
-            // Support tab
-            joinTelegramBtn: document.getElementById('join-telegram')
+            fullResults: document.getElementById('full-results')
         };
 
         // Initialize the app
@@ -503,15 +576,19 @@
         // Load credentials from GitHub
         async function loadCredentials() {
             try {
+                // Use raw.githubusercontent.com URL for the JSON file
                 const response = await fetch('https://raw.githubusercontent.com/DikicaMeat/apk/main/credentials.json');
                 if (response.ok) {
                     state.credentials = await response.json();
                     console.log('Credentials loaded successfully');
                 } else {
                     console.error('Failed to load credentials');
+                    // Fallback to empty credentials if loading fails
+                    state.credentials = {};
                 }
             } catch (error) {
                 console.error('Error loading credentials:', error);
+                state.credentials = {};
             }
         }
 
@@ -552,15 +629,13 @@
             elements.loginBtn.addEventListener('click', login);
             elements.logoutBtn.addEventListener('click', logout);
             elements.saveWebhookBtn.addEventListener('click', saveWebhook);
+            elements.joinTelegramBtn.addEventListener('click', () => {
+                window.open('https://t.me/Walletcrackzzz', '_blank');
+            });
             
             // Results tab
             elements.sortBtn.addEventListener('click', sortResults);
             elements.exportBtn.addEventListener('click', exportResults);
-            
-            // Support tab
-            elements.joinTelegramBtn.addEventListener('click', () => {
-                window.open('https://t.me/Walletcrackzzz', '_blank');
-            });
         }
 
         // Show selected tab
@@ -603,7 +678,7 @@
             state.progressInterval = setInterval(updateProgress, 100);
             
             // Start scan simulation
-            state.scanInterval = setInterval(runScanStep, 100);
+            state.scanInterval = setInterval(runScanStep, state.scanSpeed);
         }
 
         // Stop scan
@@ -631,13 +706,12 @@
             state.scanStats.attempts++;
             updateStatsDisplay();
             
-            // In demo mode, find wallets periodically
+            // In demo mode, find wallets periodically (every 90 seconds)
             if (!state.loggedIn) {
                 const now = Date.now();
-                const lastFindTime = state.lastFindTime || 0;
-                const findInterval = 30 * 1000; // 30 seconds
+                const timeSinceLastFind = now - state.lastFindTime;
                 
-                if (now - lastFindTime > findInterval) {
+                if (timeSinceLastFind > state.demoFindInterval) {
                     state.lastFindTime = now;
                     state.scanStats.found++;
                     
@@ -818,7 +892,7 @@
                     <div>Seed: ${wallet.demo ? '[DEMO MODE - LOGIN REQUIRED]' : wallet.seed}</div>
                     <div>Status: <span class="${statusClass}">${statusText}</span></div>
                     <div>Found: ${date}</div>
-                    <div>${'='.repeat(40)}</div>
+                    <div>${'='.repeat(30)}</div>
                 `;
                 
                 elements.fullResults.appendChild(item);
@@ -884,7 +958,7 @@
         }
 
         // Login
-        function login() {
+        async function login() {
             const username = elements.usernameInput.value.trim();
             const password = elements.passwordInput.value.trim();
             
@@ -893,7 +967,8 @@
                 return;
             }
             
-            const authResult = verifyCredentials(username, password);
+            // Verify credentials
+            const authResult = await verifyCredentials(username, password);
             if (authResult) {
                 state.loggedIn = true;
                 state.targetCoin = authResult;
@@ -921,7 +996,7 @@
         }
 
         // Verify credentials
-        function verifyCredentials(username, password) {
+        async function verifyCredentials(username, password) {
             if (!state.credentials) {
                 console.error('Credentials not loaded');
                 return false;
