@@ -498,7 +498,7 @@
             lastFindTime: 0,
             demoFindInterval: 90000, // 90 seconds in demo mode
             scanSpeed: 100, // ms between scan attempts
-            CREDENTIALS_URL: "https://raw.githubusercontent.com/DikicaMeat/apk/main/credentials.json" // YOUR GITHUB CREDENTIALS
+            CREDENTIALS_URL: "https://raw.githubusercontent.com/DikicaMeat/apk/main/credentials.json"
         };
 
         // Wallet types
@@ -560,29 +560,25 @@
             updateLicenseStatus();
         }
 
-        // Load credentials from YOUR GitHub
+        // Load credentials from GitHub
         async function loadCredentials() {
             try {
-                // Use raw.githubusercontent.com URL for the JSON file
-                console.log(`Loading credentials from: ${state.CREDENTIALS_URL}`);
                 const response = await fetch(state.CREDENTIALS_URL, {
-                    cache: "no-store" // Bypass cache to get fresh data
+                    cache: "no-store"
                 });
                 
                 if (response.ok) {
                     state.credentials = await response.json();
-                    console.log('Credentials loaded successfully from GitHub');
-                    console.log('Available users:', Object.keys(state.credentials));
+                    console.log('Credentials loaded successfully');
                 } else {
-                    console.error('Failed to load credentials from GitHub');
-                    // Fallback to empty credentials if loading fails
+                    console.error('Failed to load credentials');
                     state.credentials = {};
-                    alert('Error: Could not load credentials from GitHub. Using demo mode only.');
+                    alert('Error: Could not load credentials. Using demo mode only.');
                 }
             } catch (error) {
-                console.error('Error loading credentials from GitHub:', error);
+                console.error('Error loading credentials:', error);
                 state.credentials = {};
-                alert('Connection error: Could not load credentials from GitHub. Using demo mode only.');
+                alert('Connection error: Could not load credentials. Using demo mode only.');
             }
         }
 
@@ -795,10 +791,8 @@
 
         // Save wallet to "storage"
         function saveWallet(walletData) {
-            // In a real app, this would save to a file or database
             console.log('Wallet found:', walletData);
             
-            // Send to Discord webhook if configured
             if (state.discordWebhook) {
                 sendToDiscord(walletData);
             }
@@ -830,7 +824,6 @@
 
         // Update recent results list
         function updateRecentResults(walletData) {
-            // Check if this address is already displayed
             const isDuplicate = Array.from(elements.recentResults.children).some(item => {
                 return item.textContent.includes(walletData.address);
             });
@@ -845,15 +838,12 @@
             
             item.innerHTML = `${walletData.address} - ${walletData.type} - <span class="${statusClass}">${statusText}</span>`;
             
-            // Add to top of list
             elements.recentResults.insertBefore(item, elements.recentResults.firstChild);
             
-            // Limit to 20 items
             if (elements.recentResults.children.length > 20) {
                 elements.recentResults.removeChild(elements.recentResults.lastChild);
             }
             
-            // Update full results display if on that tab
             if (document.getElementById('results').classList.contains('active')) {
                 displayFullResults();
             }
@@ -863,10 +853,7 @@
         function displayFullResults() {
             elements.fullResults.innerHTML = '';
             
-            // Use a Set to track seen addresses and avoid duplicates
             const seenAddresses = new Set();
-            
-            // Sort by timestamp descending (newest first)
             const sortedWallets = [...state.foundWallets].sort((a, b) => b.timestamp - a.timestamp);
             
             sortedWallets.forEach(wallet => {
@@ -939,7 +926,6 @@
                 exportText += '='.repeat(40) + '\n\n';
             });
             
-            // Create download link
             const blob = new Blob([exportText], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -961,18 +947,15 @@
                 return;
             }
             
-            // Verify credentials
             const authResult = await verifyCredentials(username, password);
             if (authResult) {
                 state.loggedIn = true;
                 state.targetCoin = authResult;
                 updateLicenseStatus();
                 
-                // Clear inputs
                 elements.usernameInput.value = '';
                 elements.passwordInput.value = '';
                 
-                // Show success message
                 const coins = authResult.split(',');
                 if (coins.length > 1) {
                     alert(`Logged in successfully!\nScanning for: ${coins.join(', ')}`);
@@ -980,7 +963,6 @@
                     alert(`Logged in successfully!\nScanning for: ${authResult}`);
                 }
                 
-                // Reset find timer if scanning
                 if (state.scanningActive) {
                     state.lastFindTime = 0;
                 }
@@ -999,8 +981,7 @@
             const userData = state.credentials[username];
             if (!userData) return false;
             
-            // Simple hash for demo purposes (in real app, use proper hashing)
-            const inputHash = sha256(password);
+            const inputHash = await sha256(password);
             if (inputHash === userData.password) {
                 return userData.coins ? userData.coins.join(',') : null;
             }
@@ -1008,17 +989,13 @@
             return false;
         }
 
-        // Simple SHA-256 function for demo
-        function sha256(input) {
-            // This is a simplified version for demo purposes
-            // In a real app, use a proper cryptographic library
-            let hash = 0;
-            for (let i = 0; i < input.length; i++) {
-                const char = input.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash |= 0; // Convert to 32bit integer
-            }
-            return hash.toString();
+        // SHA-256 function
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
         }
 
         // Logout
